@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "EternoBliss"
+version = "1.0.0"
+id = "artifacts/eternobliss"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 22736
+
+[services.development]
+run = "pnpm --filter @workspace/eternobliss run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/eternobliss", "run", "build" ]
+publicDir = "artifacts/eternobliss/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22736"
+BASE_PATH = "/"

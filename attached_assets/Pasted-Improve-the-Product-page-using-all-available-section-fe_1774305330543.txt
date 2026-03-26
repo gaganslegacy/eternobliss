@@ -1,0 +1,789 @@
+Improve the Product page using all available
+section features. Do not change any styling,
+colors, fonts, or design tokens.
+
+The product page currently has a basic hero
+and ATC section. Add these complete sections
+below the hero for each product type.
+
+═══════════════════════════════════════════════════
+DETECT PRODUCT TYPE FROM TAGS
+═══════════════════════════════════════════════════
+
+Read the product's tags array to determine
+which template to render:
+
+  if tags includes "supplement":
+    render SupplementProductPage sections
+
+  if tags includes "fitness-tech":
+    render FitnessTechProductPage sections
+
+  if tags includes "compression":
+    render CompressionProductPage sections
+
+Default: render FitnessTechProductPage sections
+
+═══════════════════════════════════════════════════
+ALL PRODUCT TYPES — SHARED SECTIONS
+═══════════════════════════════════════════════════
+
+SECTION: SPEC STRIP
+Full-width horizontal strip
+bg: #EFE9DF (champagne)
+padding: 20px 0
+display: flex, justify-content: center
+gap: 48px desktop / 24px mobile
+overflow-x: auto on mobile
+
+Each spec item:
+  display: flex, flex-direction: column
+  align-items: center, gap: 4px
+
+  Value:
+    Cormorant Garamond, 28px, #9B6B4D, weight 400
+
+  Label:
+    Lato 300, 11px, #6B6B6B, uppercase
+    letter-spacing: 0.12em
+
+Divider between items:
+  width: 1px, height: 32px
+  bg: #E5E3DF, flex-shrink: 0
+
+SUPPLEMENT specs:
+  "10g" / Collagen Per Serving |
+  "30" / Daily Servings |
+  "Types I & III" / Collagen Type |
+  "Unflavored" / Mixes in Anything |
+  "15%" / Subscribe & Save
+
+FITNESS TECH specs:
+  "630nm + 850nm" / Dual Wavelength |
+  "21×15cm" / Treatment Area |
+  "10–20 min" / Daily Protocol |
+  "Class II" / FDA Cleared |
+  "2 Years" / Warranty
+
+COMPRESSION specs:
+  "15–25mmHg" / Medical Grade |
+  "4-Way Stretch" / Full Range |
+  "82% Nylon" / Premium Fabric |
+  "6–12mo" / Compression Life |
+  "Machine" / Washable
+
+─────────────────────────────────────────
+
+SECTION: HOW IT WORKS
+bg: #FAFAF8
+padding: 96px vertical
+max-width: 1100px, centered
+
+Section header:
+  Eyebrow: "HOW IT WORKS"
+  Heading: product-specific (see below)
+  Rule: 40px, 1px, #9B6B4D
+
+3 steps in a row, gap: 48px
+
+Each step:
+  text-align: center
+
+  Step number:
+    Cormorant Garamond, 80px, #9B6B4D
+    opacity: 0.15, line-height: 1
+    display: block, margin-bottom: -24px
+
+  Step title:
+    Lato 700, 12px, #0A0A0A
+    uppercase, letter-spacing: 0.12em
+    margin-bottom: 12px
+
+  Step body:
+    Lato 300, 14px, #6B6B6B
+    line-height: 1.8, max-width: 220px
+    margin: 0 auto
+
+Dashed connector line between steps:
+  border-top: 1px dashed #E5E3DF
+  position absolute, top: 40px
+  (connects step numbers visually)
+
+SUPPLEMENT steps:
+  "01" / "MIX IT IN"
+    "Add one scoop to water, coffee,
+     smoothie, or any beverage of
+     your choice. Unflavored — no
+     taste, no texture."
+
+  "02" / "TAKE DAILY"
+    "Consistency is everything with
+     collagen. Daily use for 8–12
+     weeks delivers the most
+     measurable results."
+
+  "03" / "FEEL THE SHIFT"
+    "Most customers notice improved
+     skin elasticity in 4–6 weeks.
+     Hair and nail improvements
+     follow at 8–10 weeks."
+
+FITNESS TECH steps:
+  "01" / "CLEANSE"
+    "Cleanse and dry the treatment area.
+     Remove all makeup and oils
+     before your session."
+
+  "02" / "TREAT"
+    "Position device 6 inches from
+     your face. Treat for 10–20 minutes
+     per session. Keep eyes closed."
+
+  "03" / "RESTORE"
+    "Apply your normal skincare routine
+     immediately after. Your skin is
+     primed for maximum absorption."
+
+COMPRESSION steps:
+  "01" / "PUT IT ON"
+    "Roll on from the foot upward.
+     Never pull from the top down.
+     Ensures even compression
+     distribution throughout."
+
+  "02" / "MOVE FREELY"
+    "Four-way stretch adapts to every
+     movement. Compression stays
+     consistent through your full
+     range of motion all day."
+
+  "03" / "FEEL THE DIFFERENCE"
+    "Reduced heaviness within hours.
+     With daily use, circulation
+     improvement and faster recovery
+     become consistently measurable."
+
+─────────────────────────────────────────
+
+SECTION: CLINICAL RESULTS
+bg: #EFE9DF
+padding: 96px vertical
+max-width: 900px, centered, text-align center
+
+Section header:
+  Eyebrow: "CLINICAL RESULTS"
+  Heading: "The Numbers"
+  Subheading: "Based on independent
+    clinical studies and customer
+    research over 12 weeks."
+
+3 stat columns, gap: 48px
+Each column: text-align center
+
+  SVG circle (140px):
+    Track: stroke #E5E3DF, strokeWidth 3
+    Arc: stroke #9B6B4D, strokeWidth 3
+      stroke-linecap: round
+      Animates on scroll entry
+
+  Number (center of SVG):
+    Cormorant Garamond, 36px, #9B6B4D
+
+  Title below SVG:
+    Lato 700, 12px, #0A0A0A
+    uppercase, letter-spacing 0.1em
+    margin-top: 16px
+
+  Body:
+    Lato 300, 13px, #6B6B6B
+    line-height: 1.75
+    max-width: 200px, margin: 0 auto
+    margin-top: 8px
+
+SUPPLEMENT stats:
+  "87%" / "Improved Skin Elasticity"
+    "Visible improvement in skin
+     firmness and texture after
+     8 weeks of daily use"
+
+  "76%" / "Reduced Joint Discomfort"
+    "Measurable reduction in joint
+     stiffness reported after
+     4–6 weeks"
+
+  "91%" / "Would Recommend"
+    "Of verified buyers would
+     recommend to a friend
+     or family member"
+
+FITNESS TECH stats:
+  "92%" / "Reduced Inflammation"
+    "In a double-blind study showed
+     measurable reduction in
+     inflammatory markers"
+
+  "87%" / "Improved Skin Texture"
+    "Independent dermatological
+     assessment after
+     12 weeks"
+
+  "2.4×" / "Collagen Production"
+    "Biopsies showed increased
+     collagen density vs
+     control group"
+
+COMPRESSION stats:
+  "23%" / "Venous Return Velocity"
+    "Increase in blood flow back
+     toward the heart vs
+     standard clothing"
+
+  "31%" / "Less Muscle Soreness"
+    "Reduction in delayed onset
+     soreness after high
+     intensity exercise"
+
+  "48%" / "Reduced Swelling"
+    "Of wearers reported measurable
+     reduction in leg swelling
+     during extended wear"
+
+─────────────────────────────────────────
+
+SECTION: TESTIMONIALS
+bg: #FFFFFF
+padding: 96px vertical
+max-width: 1100px, centered
+
+Section header:
+  Eyebrow: "REAL RESULTS"
+  Heading: "What Our Community Says"
+
+Aggregate row:
+  5 gold stars (fill: #D4AF37, 18px each)
+  "4.8 out of 5"
+    Cormorant Garamond, 28px, #0A0A0A
+  "Based on 2,300+ verified reviews"
+    Lato 300, 13px, #6B6B6B
+  Divider: 60px, 1px, #E5E3DF, centered
+    margin: 20px auto 48px
+
+4 cards, grid 2×2 desktop
+  1×1 on mobile (carousel with swipe)
+
+Each card:
+  bg: #FAFAF8
+  border: none
+  border-top: 2px solid #9B6B4D
+  padding: 28px 0 0 0
+  (no side padding — editorial look)
+
+  Quote mark:
+    Cormorant Garamond, 80px, #9B6B4D
+    opacity: 0.08, line-height: 0.5
+    display block, margin-bottom: -20px
+
+  5 stars: fill #D4AF37, 11px each
+
+  Product tag (below stars):
+    bg: rgba(155,107,77,0.08)
+    color: #9B6B4D
+    Lato 700, 9px, uppercase
+    px-2 py-1, display inline-block
+    margin: 8px 0 10px
+
+  Review heading:
+    Lato 700, 15px, #0A0A0A, mb-8px
+
+  Review body:
+    Lato 300, 14px, #333333
+    line-height: 1.8, mb-16px
+
+  Reviewer row:
+    border-top: 1px solid #F0EBE3
+    padding-top: 14px
+    flex, gap: 10px, align-items: center
+
+    Avatar:
+      32px circle, bg: #EFE9DF
+      Cormorant Garamond, 16px, #9B6B4D
+      (initials only)
+
+    Name: Lato 600, 13px, #0A0A0A
+    "✓ Verified": Lato 300, 11px, #5F7A61
+
+SUPPLEMENT reviews:
+  Card 1:
+    Tag: "Collagen Powder"
+    Heading: "My Skin Has Completely Changed"
+    Body: "I've tried every collagen powder
+     on the market. This one actually works.
+     Six weeks in and my aesthetician asked
+     what I was doing differently. My skin
+     looks like it did five years ago."
+    Name: Sarah M.
+
+  Card 2:
+    Tag: "Collagen Powder — Subscribe"
+    Heading: "Finally a Supplement That
+     Delivers"
+    Body: "Started for my joints, stayed
+     for my skin. The subscription is
+     effortless. I genuinely notice a
+     difference when I miss a few days
+     — that's when you know it's working."
+    Name: James T.
+
+  Card 3:
+    Tag: "Collagen Powder"
+    Heading: "Worth Every Cent"
+    Body: "My nails were breaking constantly.
+     After 8 weeks they're longer and
+     stronger than they've ever been. The
+     powder is completely tasteless —
+     I put it in my morning coffee daily."
+    Name: Emily R.
+
+  Card 4:
+    Tag: "Collagen Powder — 90 Day"
+    Heading: "My Go-To Daily Ritual"
+    Body: "Three months in. My hair is
+     noticeably thicker, my skin has
+     a glow I haven't had in years, and
+     my knee pain from running has
+     almost completely disappeared."
+    Name: Michelle K.
+
+FITNESS TECH reviews:
+  Card 1:
+    Tag: "Red Light Therapy Device"
+    Heading: "My Skin Has Never
+     Looked Better"
+    Body: "I was paying $180 per red light
+     session at my clinic. This device
+     paid for itself after two visits.
+     The results are identical and I
+     use it in my living room at night."
+    Name: Caroline M.
+
+  Card 2:
+    Tag: "Red Light Therapy Device"
+    Heading: "Worth Every Single Cent"
+    Body: "Week 6 my aesthetician asked
+     what I was doing differently. Fine
+     lines have softened, skin tone is
+     more even, and I have a glow I
+     haven't had since my twenties."
+    Name: David K.
+
+  Card 3:
+    Tag: "Fitness Ring"
+    Heading: "Finally Understand
+     My Sleep"
+    Body: "The sleep data completely
+     changed how I approach recovery.
+     I stopped overtraining and my
+     performance has improved more in
+     8 weeks than the previous year."
+    Name: Marcus T.
+
+  Card 4:
+    Tag: "Fitness Ring"
+    Heading: "The Most Useful Wearable
+     I've Owned"
+    Body: "I've tried four rings and
+     two watches. This one has the
+     most accurate sleep tracking
+     and the 7-day battery means I
+     actually wear it every single day."
+    Name: Priya N.
+
+COMPRESSION reviews:
+  Card 1:
+    Tag: "Compression Leggings — Dusty Rose"
+    Heading: "I Wear These Every Day"
+    Body: "Bought Dusty Rose, immediately
+     ordered Midnight Black. My legs feel
+     incredible after long days on my feet
+     and they look so good I wear them
+     everywhere. Genuinely obsessed."
+    Name: Taylor M.
+
+  Card 2:
+    Tag: "Compression Face Mask"
+    Heading: "My Face Looks Lifted
+     Every Morning"
+    Body: "After 3 weeks wearing this
+     overnight my face looks more defined
+     when I wake up. The puffiness is
+     completely gone and my skincare
+     absorbs so much better underneath it."
+    Name: Sophia L.
+
+  Card 3:
+    Tag: "Knee Sleeves — Olive"
+    Heading: "Training Without Pain"
+    Body: "Knee issues for years. These
+     gave me enough support to get back
+     to heavy squats. The olive color
+     looks amazing and they don't slip
+     during my workout at all."
+    Name: Ryan C.
+
+  Card 4:
+    Tag: "Upper Body Compression"
+    Heading: "My Posture Has Changed"
+    Body: "A week of wearing this during
+     work hours and I caught myself
+     sitting straight without thinking.
+     Back pain from desk work has reduced
+     dramatically. The black goes under
+     literally everything."
+    Name: Natalie K.
+
+─────────────────────────────────────────
+
+SECTION: FAQ (accordion)
+bg: #FAFAF8
+padding: 96px vertical
+max-width: 760px, centered
+
+Section header:
+  Eyebrow: "FAQ"
+  Heading: "Frequently Asked Questions"
+
+Accordion style:
+  Each item: border-bottom 1px solid #E5E3DF
+  Question: Lato 600, 15px, #0A0A0A, py-20px
+  Chevron right → rotates down when open
+  Answer: Lato 300, 14px, #6B6B6B
+    line-height: 1.8, pb-20px
+  One item open at a time
+
+SUPPLEMENT FAQs:
+  Q: When should I take collagen?
+  A: Consistency matters more than timing.
+     Most customers take it in the morning
+     with coffee or water. Post-workout is
+     also effective for joint and muscle
+     support. Just take it daily.
+
+  Q: How long until I see results?
+  A: Most customers notice improved skin
+     texture and hydration at 4–6 weeks.
+     Hair and nail improvements typically
+     appear at 8–10 weeks. Joint support
+     is often felt within 2–4 weeks.
+
+  Q: Is it truly unflavored?
+  A: Yes — completely tasteless and
+     odorless. It dissolves fully in hot
+     or cold liquids. You will not taste
+     it in your coffee, smoothie, or water.
+
+  Q: Can I take it with other supplements?
+  A: Absolutely. Collagen stacks well with
+     Vitamin C (enhances synthesis), Biotin,
+     and Hyaluronic Acid. All of which are
+     included in our formula already.
+
+  Q: What is the return policy?
+  A: 30-day money-back guarantee. If you
+     are not satisfied for any reason email
+     support@eternobliss.com for a full
+     refund. No questions asked.
+
+FITNESS TECH FAQs:
+  Q: Is this safe for all skin types?
+  A: Yes. Red light is non-ablative,
+     produces no UV radiation, and generates
+     minimal heat. Safe for all skin types
+     and tones. The only contraindication
+     is photosensitizing medications.
+
+  Q: How soon will I see results?
+  A: Most notice improved texture and
+     reduced redness within 2–4 weeks.
+     Significant collagen improvement is
+     typically visible at 8–12 weeks.
+     Results are cumulative.
+
+  Q: How often should I use it?
+  A: 3–5 sessions per week, 10–20 minutes
+     per session. Daily use is safe and
+     accelerates results. Consistency
+     matters more than session length.
+
+  Q: What does the 2-year warranty cover?
+  A: Manufacturing defects, component
+     failures, and performance degradation.
+     Does not cover physical damage. Contact
+     support@eternobliss.com to initiate.
+
+  Q: Can I return it if I've used it?
+  A: Yes — 30-day returns on all items
+     including used devices. We want you
+     to properly try it before deciding.
+
+COMPRESSION FAQs:
+  Q: What compression level is this?
+  A: 15–25mmHg graduated compression —
+     the medical-grade moderate support
+     range. Strongest at the extremity,
+     decreasing upward. Used clinically
+     for DVT prevention and post-surgical
+     recovery.
+
+  Q: How do I find my size?
+  A: Use the size guide on the page.
+     Measure waist and hips, match to
+     the chart. If between sizes, always
+     size up. Compression should feel
+     snug — never painful or restrictive.
+
+  Q: How do I wash them?
+  A: Machine wash cold, gentle cycle,
+     inside out. Lay flat to dry — never
+     tumble dry. Heat degrades compression
+     fibers. Avoid bleach and fabric softener.
+
+  Q: How long does compression last?
+  A: With proper care, compression
+     integrity lasts 6–12 months of
+     regular wear. Replace every 6 months
+     if worn daily for medical purposes.
+
+  Q: Can I wear these during exercise?
+  A: Absolutely. Four-way stretch is
+     designed for full range of motion
+     during running, cycling, weightlifting,
+     and yoga. Compression stays consistent
+     through every movement.
+
+─────────────────────────────────────────
+
+SECTION: YOU MAY ALSO LIKE
+bg: #FFFFFF
+padding: 80px vertical
+
+Eyebrow: "YOU MAY ALSO LIKE"
+Heading: "Complete Your Collection"
+
+4 ProductCard components (reuse existing)
+
+SUPPLEMENT related:
+  1. Creatine Gummies — $39.99 — "NEW"
+  2. Magnesium Gummies — $34.99
+  3. Vitamin D3+K2 — $34.99
+  4. Fitness Ring — $249.99 — "NEW"
+
+FITNESS TECH related:
+  1. Collagen Powder — $49.99 — "BESTSELLER"
+  2. Fitness Ring — $249.99 — "NEW"
+  3. Compression Leggings — $79.99
+  4. Magnesium Gummies — $34.99
+
+COMPRESSION related:
+  1. Knee Sleeves — $54.99
+  2. Upper Body Compression — $69.99
+  3. Compression Face Mask — $49.99 — "NEW"
+  4. Collagen Powder — $49.99 — "BESTSELLER"
+
+Mobile: horizontal scroll
+  1.2 cards visible, snap scroll
+
+═══════════════════════════════════════════════════
+SUPPLEMENT-ONLY SECTIONS
+═══════════════════════════════════════════════════
+
+SECTION: SUBSCRIPTION CALLOUT
+(Only render if tags includes "supplement")
+bg: #9B6B4D
+padding: 64px vertical
+max-width: 1100px, centered
+
+2-column, 60/40, gap: 64px
+
+LEFT:
+  "Subscribe & Save 15%"
+    Cormorant Garamond, 36px, white, weight 400
+  "Get 15% off every order, free shipping,
+   and the flexibility to skip or cancel
+   anytime. No commitment required."
+    Lato 300, 15px, white/80, mt-12px
+
+RIGHT:
+  4 benefit rows stacked, gap: 12px
+  Each row: flex, gap: 12px, align-items center
+    Checkmark: "✓" Lato 700, #FFFFFF
+    Text: Lato 300, 14px, white/80
+
+  Benefits:
+    "15% off every order, forever"
+    "Free shipping on all subscription orders"
+    "Skip, pause, or cancel anytime"
+    "Priority support and early access"
+
+  "SUBSCRIBE NOW" button below:
+    bg: white, color: #9B6B4D
+    Lato 400, 12px, uppercase
+    letter-spacing: 0.2em, mt-24px
+    border-radius: 0
+
+═══════════════════════════════════════════════════
+FITNESS TECH-ONLY SECTIONS
+═══════════════════════════════════════════════════
+
+SECTION: IN THE BOX
+(Only render if tags includes "fitness-tech")
+bg: #FFFFFF
+padding: 80px vertical
+max-width: 1100px, centered
+
+Section header:
+  Eyebrow: "WHAT YOU RECEIVE"
+  Heading: "In The Box"
+
+2-column, 50/50, gap: 64px
+
+LEFT: image placeholder
+  aspect-ratio: 4/3, bg: #F0EBE3
+  shimmer animation
+
+RIGHT: numbered contents list
+  Each item:
+    border-bottom: 1px solid #F0EBE3
+    padding: 16px 0
+    flex, gap: 16px
+
+    Number:
+      Cormorant Garamond, 22px, #9B6B4D
+      width: 32px, flex-shrink: 0
+
+    Content:
+      Name: Lato 700, 14px, #0A0A0A
+      Description: Lato 300, 13px, #6B6B6B
+        margin-top: 3px
+
+RED LIGHT BOX CONTENTS:
+  1. Red Light Therapy Device
+     "21cm × 15cm — full face coverage"
+  2. AC Power Adapter
+     "Canadian plug — worldwide compatible"
+  3. Protective Carrying Case
+     "Premium hard shell, travel-ready"
+  4. User Manual
+     "Protocol guide + safety information"
+  5. Warranty Card
+     "2-year coverage — register online"
+
+FITNESS RING BOX CONTENTS:
+  1. Fitness Ring
+     "Titanium shell, chosen size"
+  2. Charging Cable
+     "Magnetic USB — charges in 60–80 min"
+  3. Sizing Kit
+     "Trial rings to find your perfect fit"
+  4. User Manual
+     "Setup guide + health metrics explained"
+  5. Warranty Card
+     "2-year coverage — register online"
+
+═══════════════════════════════════════════════════
+COMPRESSION-ONLY SECTIONS
+═══════════════════════════════════════════════════
+
+SECTION: SIZE GUIDE
+(Only render if tags includes "compression")
+bg: #FAFAF8
+padding: 96px vertical
+max-width: 1100px, centered
+
+Section header:
+  Eyebrow: "SIZE GUIDE"
+  Heading: "Find Your Perfect Fit"
+  Subheading: "If between sizes, size up.
+    Compression should feel supportive
+    — never painful."
+
+2-column, 50/50, gap: 64px
+
+LEFT — How to measure:
+  "How to Measure" — Lato 700, 18px, #0A0A0A
+
+  3 steps, stacked, gap: 24px
+  Each step: flex, gap: 16px
+
+    Number circle: 36px, bg #9B6B4D
+      Lato 700, 15px, white
+
+    Content:
+      Title: Lato 700, 14px, #0A0A0A
+      Body: Lato 300, 13px, #6B6B6B
+
+  Step 1 "Measure Your Waist":
+    "Find the narrowest point of your
+     torso, 1 inch above your belly
+     button. Exhale and measure snugly."
+
+  Step 2 "Measure Your Hips":
+    "Stand with feet together. Measure
+     around the fullest part of your
+     hips and buttocks."
+
+  Step 3 "Find Your Size":
+    "Match to the chart. If between
+     two sizes, choose the larger —
+     compression should feel supportive,
+     never painful."
+
+RIGHT — Size table:
+  2 tabs: "Leggings & Upper Body" |
+    "Knee Sleeves"
+
+  Leggings table:
+    Cols: Size | Waist | Hips | Height
+    XS  | 24–26" | 34–36" | 5'0"–5'4"
+    S   | 27–29" | 37–39" | 5'2"–5'6"
+    M   | 30–32" | 40–42" | 5'4"–5'8"
+    L   | 33–35" | 43–45" | 5'6"–5'10"
+    XL  | 36–38" | 46–48" | 5'8"–6'0"
+    XXL | 39–42" | 49–52" | 5'10"–6'2"
+
+  Knee Sleeves table:
+    Cols: Size | Knee | Thigh
+    S   | 13–14" | 17–18"
+    M   | 14–15" | 18–20"
+    L   | 15–17" | 20–22"
+    XL  | 17–19" | 22–24"
+
+  Fit tip below:
+    bg: #EFE9DF, border-radius: 4px
+    padding: 14px 16px, margin-top: 12px
+    Lato 300 italic, 13px, #6B6B6B
+    "Machine wash cold · Lay flat to dry ·
+     Compression lasts 6–12 months with
+     proper care."
+
+═══════════════════════════════════════════════════
+WHAT NOT TO CHANGE
+═══════════════════════════════════════════════════
+
+✅ Existing hero section — untouched
+✅ All colors and design tokens
+✅ All fonts and typography
+✅ All existing component styles
+✅ Cart drawer behavior
+✅ Header and footer
+✅ All responsive breakpoints
+✅ All animations that already exist
+
+New sections must:
+  Use the exact same design tokens
+  Match the existing visual style
+  Be fully responsive
+  Respect prefers-reduced-motion
+  Entrance animate on scroll
+    (opacity 0 → 1, translateY 20px → 0
+     600ms ease, threshold 0.1,
+     fires once only)

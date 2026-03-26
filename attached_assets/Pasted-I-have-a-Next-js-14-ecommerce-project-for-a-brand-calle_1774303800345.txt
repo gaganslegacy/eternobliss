@@ -1,0 +1,789 @@
+I have a Next.js 14 ecommerce project for a brand 
+called EternoBliss. The visual design is complete.
+I need you to:
+
+1. Fix broken dependencies
+2. Wire Shopify Storefront API (headless)
+3. Replace all placeholder product data with 
+   live Shopify data
+4. Build a working cart
+5. Wire checkout to Shopify
+6. Set up environment variables
+7. Make it fully deployable to Vercel
+
+═══════════════════════════════════════════════════
+STEP 1 — FIX BROKEN PACKAGES
+═══════════════════════════════════════════════════
+
+Remove these two packages from package.json —
+they are same.new internal packages that don't
+exist on npm and are not imported anywhere:
+
+  "same-runtime": "^0.0.1"
+  "react-grab": "latest"
+
+Delete the /dreametech-clone/ subdirectory —
+it is a duplicate and not the project root.
+The real project lives at /src/.
+
+Run: npm install (or pnpm install)
+Confirm the project builds without errors.
+
+═══════════════════════════════════════════════════
+STEP 2 — SHOPIFY STOREFRONT API SETUP
+═══════════════════════════════════════════════════
+
+Install these packages:
+  npm install @shopify/hydrogen-react
+  npm install graphql graphql-request
+
+Create /src/lib/shopify.ts with:
+
+  const domain = process.env
+    .NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN!
+  const storefrontToken = process.env
+    .NEXT_PUBLIC_SHOPIFY_STOREFRONT_TOKEN!
+  const apiVersion = '2024-01'
+  const endpoint =
+    `https://${domain}/api/${apiVersion}/graphql.json`
+
+  export async function shopifyFetch({
+    query,
+    variables,
+  }: {
+    query: string
+    variables?: Record<string, unknown>
+  }) {
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Shopify-Storefront-Access-Token':
+          storefrontToken,
+      },
+      body: JSON.stringify({ query, variables }),
+      next: { revalidate: 60 },
+    })
+    const data = await res.json()
+    if (data.errors) {
+      throw new Error(data.errors[0].message)
+    }
+    return data
+  }
+
+Create .env.local with placeholders:
+  NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN=
+    eternobliss.myshopify.com
+  NEXT_PUBLIC_SHOPIFY_STOREFRONT_TOKEN=
+    [token goes here]
+
+Add .env.local to .gitignore
+
+═══════════════════════════════════════════════════
+STEP 3 — SHOPIFY DATA FETCHERS
+═══════════════════════════════════════════════════
+
+Create /src/lib/shopify-queries.ts with these
+GraphQL queries:
+
+GET ALL PRODUCTS:
+  export const GET_ALL_PRODUCTS = `
+    query GetAllProducts($first: Int!) {
+      products(first: $first) {
+        edges {
+          node {
+            id
+            handle
+            title
+            description
+            priceRange {
+              minVariantPrice {
+                amount
+                currencyCode
+              }
+            }
+            compareAtPriceRange {
+              minVariantPrice {
+                amount
+              }
+            }
+            images(first: 3) {
+              edges {
+                node {
+                  url
+                  altText
+                }
+              }
+            }
+            variants(first: 10) {
+              edges {
+                node {
+                  id
+                  title
+                  price {
+                    amount
+                  }
+                  availableForSale
+                  selectedOptions {
+                    name
+                    value
+                  }
+                }
+              }
+            }
+            tags
+            collections(first: 3) {
+              edges {
+                node {
+                  handle
+                  title
+                }
+              }
+            }
+            metafields(
+              identifiers: [
+                {namespace: "custom",
+                 key: "subscription_price"},
+                {namespace: "custom",
+                 key: "badge"},
+                {namespace: "custom",
+                 key: "key_stat"}
+              ]
+            ) {
+              key
+              value
+            }
+          }
+        }
+      }
+    }
+  `
+
+GET PRODUCT BY HANDLE:
+  export const GET_PRODUCT_BY_HANDLE = `
+    query GetProduct($handle: String!) {
+      product(handle: $handle) {
+        id
+        handle
+        title
+        description
+        descriptionHtml
+        priceRange {
+          minVariantPrice {
+            amount
+            currencyCode
+          }
+        }
+        compareAtPriceRange {
+          minVariantPrice {
+            amount
+          }
+        }
+        images(first: 8) {
+          edges {
+            node {
+              url
+              altText
+            }
+          }
+        }
+        variants(first: 20) {
+          edges {
+            node {
+              id
+              title
+              price {
+                amount
+              }
+              availableForSale
+              selectedOptions {
+                name
+                value
+              }
+            }
+          }
+        }
+        tags
+        collections(first: 3) {
+          edges {
+            node {
+              handle
+              title
+            }
+          }
+        }
+      }
+    }
+  `
+
+GET COLLECTION BY HANDLE:
+  export const GET_COLLECTION = `
+    query GetCollection(
+      $handle: String!
+      $first: Int!
+    ) {
+      collection(handle: $handle) {
+        id
+        handle
+        title
+        description
+        image {
+          url
+          altText
+        }
+        products(first: $first) {
+          edges {
+            node {
+              id
+              handle
+              title
+              priceRange {
+                minVariantPrice {
+                  amount
+                  currencyCode
+                }
+              }
+              compareAtPriceRange {
+                minVariantPrice {
+                  amount
+                }
+              }
+              images(first: 2) {
+                edges {
+                  node {
+                    url
+                    altText
+                  }
+                }
+              }
+              tags
+              variants(first: 5) {
+                edges {
+                  node {
+                    id
+                    availableForSale
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `
+
+CREATE CART:
+  export const CREATE_CART = `
+    mutation CreateCart(
+      $lines: [CartLineInput!]!
+    ) {
+      cartCreate(input: { lines: $lines }) {
+        cart {
+          id
+          checkoutUrl
+          totalQuantity
+          lines(first: 20) {
+            edges {
+              node {
+                id
+                quantity
+                merchandise {
+                  ... on ProductVariant {
+                    id
+                    title
+                    price {
+                      amount
+                    }
+                    product {
+                      title
+                      images(first: 1) {
+                        edges {
+                          node { url }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+          cost {
+            totalAmount {
+              amount
+              currencyCode
+            }
+            subtotalAmount {
+              amount
+            }
+          }
+        }
+      }
+    }
+  `
+
+ADD TO CART:
+  export const ADD_TO_CART = `
+    mutation AddToCart(
+      $cartId: ID!
+      $lines: [CartLineInput!]!
+    ) {
+      cartLinesAdd(
+        cartId: $cartId
+        lines: $lines
+      ) {
+        cart {
+          id
+          checkoutUrl
+          totalQuantity
+          lines(first: 20) {
+            edges {
+              node {
+                id
+                quantity
+                merchandise {
+                  ... on ProductVariant {
+                    id
+                    title
+                    price {
+                      amount
+                    }
+                    product {
+                      title
+                      images(first: 1) {
+                        edges {
+                          node { url }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+          cost {
+            totalAmount {
+              amount
+              currencyCode
+            }
+            subtotalAmount {
+              amount
+            }
+          }
+        }
+      }
+    }
+  `
+
+UPDATE CART LINE:
+  export const UPDATE_CART = `
+    mutation UpdateCart(
+      $cartId: ID!
+      $lines: [CartLineUpdateInput!]!
+    ) {
+      cartLinesUpdate(
+        cartId: $cartId
+        lines: $lines
+      ) {
+        cart {
+          id
+          totalQuantity
+          lines(first: 20) {
+            edges {
+              node {
+                id
+                quantity
+                merchandise {
+                  ... on ProductVariant {
+                    id
+                    title
+                    price { amount }
+                    product { title }
+                  }
+                }
+              }
+            }
+          }
+          cost {
+            totalAmount { amount currencyCode }
+            subtotalAmount { amount }
+          }
+        }
+      }
+    }
+  `
+
+REMOVE FROM CART:
+  export const REMOVE_FROM_CART = `
+    mutation RemoveFromCart(
+      $cartId: ID!
+      $lineIds: [ID!]!
+    ) {
+      cartLinesRemove(
+        cartId: $cartId
+        lineIds: $lineIds
+      ) {
+        cart {
+          id
+          totalQuantity
+          lines(first: 20) {
+            edges {
+              node {
+                id
+                quantity
+                merchandise {
+                  ... on ProductVariant {
+                    id
+                    title
+                    price { amount }
+                    product { title }
+                  }
+                }
+              }
+            }
+          }
+          cost {
+            totalAmount { amount currencyCode }
+            subtotalAmount { amount }
+          }
+        }
+      }
+    }
+  `
+
+═══════════════════════════════════════════════════
+STEP 4 — CART CONTEXT
+═══════════════════════════════════════════════════
+
+Create /src/context/CartContext.tsx:
+
+  "use client"
+
+  A React context that manages:
+
+  State:
+    cartId: string | null
+    cartItems: CartItem[]
+    cartTotal: number
+    cartCount: number
+    checkoutUrl: string | null
+    isOpen: boolean
+    isLoading: boolean
+
+  CartItem type:
+    lineId: string
+    variantId: string
+    productTitle: string
+    variantTitle: string
+    price: number
+    quantity: number
+    imageUrl: string
+
+  Functions:
+    addToCart(variantId, quantity)
+      — calls CREATE_CART if no cartId
+      — calls ADD_TO_CART if cartId exists
+      — saves cartId to localStorage
+      — sets isOpen to true
+
+    removeFromCart(lineId)
+      — calls REMOVE_FROM_CART mutation
+      — updates local state
+
+    updateQuantity(lineId, quantity)
+      — calls UPDATE_CART mutation
+      — if quantity 0 calls removeFromCart
+
+    openCart() / closeCart()
+      — toggles isOpen
+
+    goToCheckout()
+      — redirects to checkoutUrl
+
+  Persistence:
+    On mount: retrieve cartId from localStorage
+    Restore cart state on page reload
+
+Wrap /src/app/layout.tsx with CartProvider.
+
+═══════════════════════════════════════════════════
+STEP 5 — CART DRAWER COMPONENT
+═══════════════════════════════════════════════════
+
+Create /src/components/CartDrawer.tsx:
+
+  Slides in from right when isOpen = true
+  Overlay backdrop when open
+
+  Header:
+    "Your Cart ([count] items)"
+    × close button
+
+  Empty state:
+    "Your cart is empty"
+    "CONTINUE SHOPPING" button
+
+  Cart items list:
+    Each item:
+      Product image (60×60px)
+      Product name + variant
+      Price
+      Quantity selector (− qty +)
+      Remove link
+
+  Footer:
+    Free shipping progress bar
+      (fill based on $100 threshold)
+    Subtotal row
+    "CHECKOUT — $[total]" button
+      → bg-cognac, full width
+      → onClick: goToCheckout()
+    "Shop Pay" button (optional)
+
+  Free shipping message:
+    If subtotal < $100:
+      "Add $[X] more for free shipping"
+    If subtotal ≥ $100:
+      "🎉 You've unlocked free shipping!"
+
+Add CartDrawer to layout.tsx.
+Wire cart icon in Header.tsx to openCart().
+Show cart count badge on icon.
+
+═══════════════════════════════════════════════════
+STEP 6 — WIRE PRODUCT PAGES
+═══════════════════════════════════════════════════
+
+Update /src/app/products/[handle]/page.tsx:
+
+  Fetch product data server-side:
+    const product = await shopifyFetch({
+      query: GET_PRODUCT_BY_HANDLE,
+      variables: { handle: params.handle }
+    })
+
+  Pass to client component ProductPage.tsx
+
+  Create /src/components/ProductPage.tsx
+  as a client component with:
+
+    State:
+      selectedVariant (default: first variant)
+      selectedOptions (color, size, flavor etc)
+      quantity: 1
+      isSubscription: false (for supplements)
+      frequency: 30 (days)
+
+    ATC button:
+      onClick: addToCart(
+        selectedVariant.id,
+        quantity
+      )
+      Loading state while adding
+      Text: "ADD TO CART — $[price]"
+
+    Variant selectors:
+      For each option (Color, Size, Flavor):
+        Render appropriate selector UI
+        Update selectedVariant on change
+
+  Generate static params:
+    export async function generateStaticParams() {
+      Fetch all product handles
+      Return array of { handle } objects
+    }
+
+═══════════════════════════════════════════════════
+STEP 7 — WIRE COLLECTION PAGES
+═══════════════════════════════════════════════════
+
+Update /src/app/collections/[handle]/page.tsx:
+
+  Fetch collection server-side:
+    const collection = await shopifyFetch({
+      query: GET_COLLECTION,
+      variables: {
+        handle: params.handle,
+        first: 20
+      }
+    })
+
+  Map Shopify products to product cards
+  Each card links to /products/[handle]
+
+  Handle these collection handles:
+    supplements
+    fitness-tech
+    compression-wear
+    all
+
+  Generate static params for all 4 collections.
+
+═══════════════════════════════════════════════════
+STEP 8 — WIRE HOMEPAGE
+═══════════════════════════════════════════════════
+
+Update /src/app/page.tsx to fetch on server:
+
+  Fetch bestsellers:
+    GET_COLLECTION with handle "bestsellers"
+    or GET_ALL_PRODUCTS with first: 8
+
+  Pass to FeaturedProducts component as props
+  Replace hardcoded product arrays with
+  live Shopify data
+
+  Keep all other components as static —
+  they don't need live data.
+
+═══════════════════════════════════════════════════
+STEP 9 — TYPES
+═══════════════════════════════════════════════════
+
+Create /src/types/shopify.ts with:
+
+  export type ShopifyProduct {
+    id: string
+    handle: string
+    title: string
+    description: string
+    priceRange: {
+      minVariantPrice: {
+        amount: string
+        currencyCode: string
+      }
+    }
+    compareAtPriceRange: {
+      minVariantPrice: {
+        amount: string
+      }
+    }
+    images: {
+      edges: Array<{
+        node: {
+          url: string
+          altText: string | null
+        }
+      }>
+    }
+    variants: {
+      edges: Array<{
+        node: ShopifyVariant
+      }>
+    }
+    tags: string[]
+    collections: {
+      edges: Array<{
+        node: {
+          handle: string
+          title: string
+        }
+      }>
+    }
+  }
+
+  export type ShopifyVariant {
+    id: string
+    title: string
+    price: { amount: string }
+    availableForSale: boolean
+    selectedOptions: Array<{
+      name: string
+      value: string
+    }>
+  }
+
+  export type CartItem {
+    lineId: string
+    variantId: string
+    productTitle: string
+    variantTitle: string
+    price: number
+    quantity: number
+    imageUrl: string
+    handle: string
+  }
+
+═══════════════════════════════════════════════════
+STEP 10 — ENVIRONMENT + DEPLOYMENT
+═══════════════════════════════════════════════════
+
+Create .env.local with:
+  NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN=
+    eternobliss.myshopify.com
+  NEXT_PUBLIC_SHOPIFY_STOREFRONT_TOKEN=
+    [to be filled in]
+
+Create vercel.json:
+  {
+    "buildCommand": "npm run build",
+    "outputDirectory": ".next",
+    "framework": "nextjs"
+  }
+
+Create README.md with setup instructions:
+  1. Clone repo
+  2. npm install
+  3. Add env variables to .env.local
+  4. npm run dev
+  5. Deploy: vercel --prod
+
+Confirm the project runs with:
+  npm run dev
+
+Fix any TypeScript errors.
+Fix any import errors.
+Confirm all pages render without crashing.
+
+═══════════════════════════════════════════════════
+SHOPIFY SETUP INSTRUCTIONS
+(Tell me when code is done so I can do these)
+═══════════════════════════════════════════════════
+
+After the code is ready I will:
+
+1. Log into Shopify admin
+   (eternobliss.myshopify.com/admin)
+
+2. Go to:
+   Settings → Apps → Develop apps →
+   Create an app → EternoBliss Storefront
+
+3. Under Storefront API scopes enable:
+   unauthenticated_read_product_listings
+   unauthenticated_read_product_inventory
+   unauthenticated_read_collection_listings
+   unauthenticated_write_checkouts
+   unauthenticated_read_checkouts
+   unauthenticated_read_customer_tags
+   unauthenticated_read_content
+
+4. Copy the Storefront API access token
+   Paste into .env.local
+
+5. Create these collections in Shopify:
+   supplements
+   fitness-tech
+   compression-wear
+   all (automatic — all products)
+   bestsellers (manual — tag products)
+
+6. Add all 11 products to Shopify admin
+   with correct handles matching the code
+
+═══════════════════════════════════════════════════
+IMPORTANT NOTES
+═══════════════════════════════════════════════════
+
+- Do NOT change any visual design or styling
+- Do NOT change colors, fonts, or layouts
+- Only add functionality and data wiring
+- Keep all existing component structure
+- Placeholder images: use #F0EBE3 bg
+  with shimmer until real images added
+- All prices in CAD format: $XX.XX
+- Currency: CAD
+- Shopify checkout handles all payment
+  processing — do not build custom checkout
+- Cart lives in CartContext + localStorage
+- Server components fetch data
+- Client components handle interactivity

@@ -1,0 +1,1144 @@
+Build all missing pages for EternoBliss.
+Use the exact same design tokens, fonts,
+colors, and component patterns already
+established in the codebase.
+
+Every page must:
+  - Use Cormorant Garamond for headings
+  - Use Lato for body text
+  - Use existing color tokens
+    (cognac, linen, champagne, jet, pewter)
+  - Be fully responsive
+  - Match the existing site aesthetic
+  - Entrance animate on scroll
+  - Include Header and Footer
+
+═══════════════════════════════════════════════════
+PAGE 1 — CART PAGE (/cart)
+═══════════════════════════════════════════════════
+
+Route: /src/app/cart/page.tsx
+
+This is the full-page cart experience.
+The cart drawer already exists — this is
+the dedicated /cart route for direct access.
+
+Pulls cart state from CartContext.
+
+─── LAYOUT ───────────────────────────────────────
+
+bg: #FAFAF8
+max-width: 1280px, centered
+padding: 64px 80px desktop / 32px 20px mobile
+
+2-column layout:
+  Left (60%): Cart items + recommendations
+  Right (40%): Order summary (sticky)
+  Gap: 48px
+
+─── PAGE HEADER ──────────────────────────────────
+
+Full-width row above columns:
+  padding-bottom: 32px
+  border-bottom: 1px solid #E5E3DF
+  margin-bottom: 40px
+  flex, space-between, align-items baseline
+
+  Left:
+    "Your Cart"
+    Cormorant Garamond, 48px, #0A0A0A, weight 400
+    "[X] items" inline after
+    Lato 300, 16px, #9B9B9B italic, ml-16px
+
+  Right:
+    "Continue Shopping →"
+    Lato 400, 12px, #9B6B4D, uppercase
+    letter-spacing: 0.15em
+    hover: letter-spacing 0.2em, 300ms
+    Links to /collections/all
+
+─── FREE SHIPPING BAR ────────────────────────────
+
+Full-width, below header, above columns
+bg: #FFFFFF, border: 1px solid #E5E3DF
+border-radius: 4px, padding: 20px 28px
+flex, align-items center, gap: 20px
+
+  Icon: shipping (20px, #9B6B4D if unlocked,
+    #9B9B9B if not)
+
+  Text + bar (flex-grow):
+    If subtotal < $100:
+      "Add $[X] more to unlock free shipping"
+      Lato 300, 14px — bold the amount in cognac
+    If subtotal ≥ $100:
+      "🎉 You've unlocked free shipping!"
+      Lato 400, 14px, #5F7A61
+
+    Progress bar below text:
+      height: 4px, bg: #E5E3DF
+      Fill: #9B6B4D (< $100) / #5F7A61 (≥ $100)
+      width: (subtotal / 100 * 100)%
+      transition: width 500ms ease
+
+─── LEFT COLUMN — CART ITEMS ─────────────────────
+
+Each cart item:
+  padding: 28px 0
+  border-bottom: 1px solid #F0EBE3
+  grid: 100px 1fr auto
+  gap: 24px, align-items: start
+
+  IMAGE (100×100px):
+    bg: #F0EBE3, border-radius: 2px
+    object-fit: cover
+
+  PRODUCT INFO:
+    Collection tag:
+      Lato 400, 10px, #9B9B9B
+      uppercase, letter-spacing 0.15em, mb-6px
+
+    Product name:
+      Lato 400, 16px, #0A0A0A, mb-4px
+
+    Variant (color/size/flavor if applicable):
+      Lato 300, 13px, #9B9B9B, mb-8px
+
+    Subscription badge (if subscribed):
+      flex, gap 6px, align-items center
+      autorenew icon 12px, #9B6B4D
+      "Subscribe & Save · 15% off"
+      Lato 300, 12px, #9B6B4D
+
+    Quantity selector:
+      flex, align-items center, gap: 0
+
+      Minus / Plus buttons:
+        36×36px, border: 1px solid #E5E3DF
+        border-radius: 0, bg: transparent
+        hover: border-color #9B6B4D
+        color #9B6B4D, transition 200ms
+
+      Quantity display:
+        48×36px
+        border-top/bottom: 1px solid #E5E3DF
+        Lato 400, 14px, #0A0A0A
+        text-align: center
+
+      "Remove" link (ml-16px):
+        Lato 300, 12px, #C0B8B0
+        hover: color #A65E52, 200ms
+
+  PRICE (right, text-right):
+    Line total: Lato 300, 18px, #0A0A0A
+    Original (if discounted):
+      Lato 300, 13px, #C0B8B0, line-through
+    "You save $X":
+      Lato 300, 12px, #5F7A61 italic
+
+─── SUBSCRIPTION UPSELL ──────────────────────────
+
+Show only if cart has one-time supplement items:
+
+  bg: rgba(155,107,77,0.06)
+  border: 1px solid rgba(155,107,77,0.2)
+  border-radius: 4px, padding: 20px 24px
+  flex, space-between, align-items center
+  margin: 24px 0
+
+  Left:
+    autorenew icon 24px, #9B6B4D
+    "Switch to Subscribe & Save"
+      Lato 700, 14px, #0A0A0A, mb-4px
+    "Get 15% off every order ·
+     Free shipping · Cancel anytime"
+      Lato 300, 13px, #6B6B6B
+
+  Right:
+    "SWITCH & SAVE 15%" button
+      border: 1px solid #9B6B4D
+      color: #9B6B4D, Lato 400 11px uppercase
+      padding: 10px 20px, border-radius: 0
+      hover: bg #9B6B4D color white, 200ms
+
+─── FREQUENTLY BOUGHT TOGETHER ───────────────────
+
+Below cart items:
+
+  "Complete Your Order"
+  Lato 400, 11px, #9B9B9B, uppercase
+  letter-spacing 0.2em, mb-24px
+
+  3 cards, grid 3 columns, gap: 16px
+
+  Each card:
+    bg: #FFFFFF, border: 1px solid #E5E3DF
+    border-radius: 2px, padding: 16px
+    flex, gap: 14px, align-items: center
+    hover: border-color #9B6B4D, 200ms
+
+    Image: 60×60px, bg: #F0EBE3
+    Content:
+      Name: Lato 400, 13px, #0A0A0A, mb-2px
+      Price: Lato 300, 13px, #9B9B9B, mb-8px
+      "+ Add" button:
+        border: 1px solid #9B6B4D
+        color: #9B6B4D, full-width
+        Lato 700, 10px, uppercase
+        padding: 6px 0, border-radius: 0
+        hover: bg #9B6B4D color white
+
+  Recommend based on what's in cart:
+    Has supplements → show fitness tech
+    Has fitness tech → show supplements
+    Has compression → show supplements
+    Never show something already in cart
+
+─── RIGHT COLUMN — ORDER SUMMARY ─────────────────
+
+Position: sticky, top: 108px
+bg: #FFFFFF, border: 1px solid #E5E3DF
+border-radius: 4px, padding: 32px
+
+"Order Summary"
+  Lato 400, 11px, #0A0A0A, uppercase
+  letter-spacing 0.2em, mb-28px
+border-bottom: 1px solid #E5E3DF, mb-28px
+
+Price rows (flex, space-between, mb-14px):
+  Subtotal:
+    "Subtotal ([X] items)" Lato 300 14px #6B6B6B
+    Lato 400, 16px, #0A0A0A
+
+  Subscription discount (if applicable):
+    "Subscribe & Save (15%)" Lato 300 14px #5F7A61
+    "-$[X]" Lato 400, 16px, #5F7A61
+
+  Shipping:
+    "Shipping" Lato 300, 14px, #6B6B6B
+    If < $100: "$8.99" Lato 400, 16px, #0A0A0A
+    If ≥ $100: "FREE" Lato 700, 14px, #5F7A61
+
+  Taxes:
+    "Taxes" Lato 300, 14px, #6B6B6B
+    "Calculated at checkout"
+      Lato 300 italic, 13px, #9B9B9B
+
+  Divider: 1px solid #E5E3DF, my-20px
+
+  ORDER TOTAL:
+    "Total" Lato 400, 16px, #0A0A0A
+    Lato 300, 28px, #0A0A0A
+
+Savings summary (if subscribed items):
+  bg: rgba(95,122,97,0.08)
+  border: 1px solid rgba(95,122,97,0.2)
+  border-radius: 4px, padding: 12px 16px
+  mt-16px
+  "You're saving $[X]/month"
+  flex, gap 8px, Lato 300, 13px, #5F7A61
+
+Discount code:
+  "Discount Code" Lato 400 11px uppercase
+  letter-spacing 0.1em, mb-10px, mt-24px
+
+  Input + Apply row:
+    Input: flex-grow, height 44px
+      border: 1px solid #E5E3DF
+      border-radius: 0, bg: #FAFAF8
+      Lato 300, 14px, placeholder italic
+      focus: border-color #9B6B4D
+
+    "APPLY" button: height 44px, px-16px
+      border: 1px solid #9B6B4D
+      color: #9B6B4D, border-radius: 0
+      Lato 400 11px uppercase
+      hover: bg #9B6B4D color white
+
+  Applied state:
+    "[CODE]" Lato 700 14px #0A0A0A
+    "15% off applied ✓" Lato 300 13px #5F7A61
+    "×" remove: #C0B8B0
+
+CHECKOUT BUTTON:
+  width: 100%, height: 56px
+  bg: #9B6B4D, color: #FFFFFF
+  border-radius: 0, mt-24px
+  Lato 400, 12px, uppercase
+  letter-spacing: 0.2em
+  "CHECKOUT — $[total]"
+  hover: bg #8A5D40, 250ms
+  onClick: goToCheckout() from CartContext
+
+Security row:
+  flex, justify-content center, gap 16px
+  mt-16px
+  lock icon + "Secure Checkout"
+  shield icon + "SSL Encrypted"
+  Lato 300, 11px, #9B9B9B, uppercase
+
+Return policy:
+  text-center, mt-20px
+  Lato 300 italic, 12px, #9B9B9B
+  "30-day money-back guarantee.
+   Free returns. No questions asked."
+
+─── EMPTY CART STATE ─────────────────────────────
+
+Show when cartItems.length === 0:
+
+  Replaces both columns, text-center
+  padding: 120px 0
+
+  "0" decorative bg number:
+    Cormorant Garamond, 200px, #F0EBE3
+    display block, position relative
+
+  Heading: "Your Cart is Empty"
+    Cormorant Garamond, 48px, #0A0A0A
+    margin-top: -80px, position relative
+
+  Body: "Looks like you haven't added
+    anything yet. Explore our collection."
+    Lato 300, 16px, #6B6B6B
+    max-width: 380px, mx-auto, mt-16px
+
+  2 CTAs side by side:
+    "SHOP SUPPLEMENTS" — primary cognac
+    "SHOP ALL" — secondary border
+    gap: 12px, mt-32px, justify-center
+
+─── MOBILE ───────────────────────────────────────
+
+Single column:
+  heading → progress → items → summary
+
+Sticky checkout bar (mobile only):
+  position: fixed, bottom 0, left 0, right 0
+  height: 72px, bg: white
+  border-top: 1px solid #E5E3DF
+  padding: 12px 20px, flex, space-between
+  z-index: 50
+
+  Left: "Total:" + "$[X]"
+  Right: "CHECKOUT" button
+    bg #9B6B4D, white, height 44px
+    border-radius: 0
+
+═══════════════════════════════════════════════════
+PAGE 2 — CONTACT PAGE (/contact)
+═══════════════════════════════════════════════════
+
+Route: /src/app/contact/page.tsx
+
+─── HERO ─────────────────────────────────────────
+
+bg: #EFE9DF
+padding: 96px 80px, text-center
+
+  Eyebrow: "GET IN TOUCH"
+  Heading: "We're Here to Help"
+    Cormorant Garamond, 64px, #0A0A0A
+  Subheading: "Our wellness team replies
+    within 2 hours on business days."
+    Lato 300, 18px, #6B6B6B, mt-16px
+    max-width: 480px, mx-auto
+
+─── CONTACT OPTIONS ──────────────────────────────
+
+bg: #FFFFFF, padding: 80px
+
+3 cards, grid 3 columns, gap: 24px
+max-width: 900px, mx-auto
+
+Each card:
+  bg: #FAFAF8
+  border: 1px solid #E5E3DF
+  border-radius: 4px, padding: 40px 32px
+  text-align: center
+  hover: border-color #9B6B4D
+    translateY(-4px), 300ms
+
+  Icon: Material, 32px, #9B6B4D, mb-20px
+
+  Title: Lato 700, 16px, #0A0A0A, mb-8px
+  Body: Lato 300, 14px, #6B6B6B
+    line-height 1.75, mb-20px
+  CTA link: Lato 700, 12px, #9B6B4D
+    uppercase, letter-spacing 0.1em
+
+Card 1 — Email:
+  Icon: email
+  Title: "Email Us"
+  Body: "For general inquiries, orders,
+    and product questions. We reply
+    within 2 hours."
+  CTA: "support@eternobliss.com"
+  Link: mailto:support@eternobliss.com
+
+Card 2 — Live Chat:
+  Icon: chat_bubble_outline
+  Title: "Live Chat"
+  Body: "Chat with our wellness team
+    in real time. Available Monday–Friday
+    9am–6pm EST."
+  CTA: "START A CHAT"
+  Link: # (chat widget trigger)
+
+Card 3 — Track Order:
+  Icon: local_shipping
+  Title: "Track Your Order"
+  Body: "Have an order number? Track
+    your delivery status in real time."
+  CTA: "TRACK ORDER"
+  Link: /track-order
+
+─── CONTACT FORM ─────────────────────────────────
+
+bg: #FAFAF8, padding: 96px
+
+2-column, 40/60, gap: 80px
+max-width: 1100px, mx-auto
+
+LEFT — info:
+  Eyebrow: "SEND A MESSAGE"
+  Heading: "We'd Love to Hear
+    From You"
+    Cormorant Garamond, 40px, #0A0A0A
+
+  Body: "Whether it's a question about
+    a product, your order, or just
+    wanting to know more about our
+    wellness philosophy — we're here."
+    Lato 300, 16px, #6B6B6B, mt-16px
+    line-height 1.8
+
+  Business hours:
+    mt-32px
+    Lato 700, 12px, #0A0A0A uppercase
+    letter-spacing 0.1em, mb-12px
+
+    Rows (flex, space-between):
+      "Monday – Friday" / "9am – 6pm EST"
+      "Saturday" / "10am – 4pm EST"
+      "Sunday" / "Closed"
+      Lato 300, 14px, #6B6B6B, py-8px
+      border-bottom: 1px solid #E5E3DF
+
+RIGHT — form:
+  bg: #FFFFFF, border: 1px solid #E5E3DF
+  border-radius: 4px, padding: 40px
+
+  Fields stacked, gap: 20px:
+
+    Name row (2 columns, gap: 16px):
+      First Name input
+      Last Name input
+
+    Email input
+
+    Subject select:
+      Options:
+        "Select a topic"
+        "Order Question"
+        "Product Information"
+        "Returns & Refunds"
+        "Subscription Management"
+        "Other"
+
+    Message textarea:
+      height: 140px, resize: none
+
+    All inputs:
+      height: 48px (except textarea)
+      border: 1px solid #E5E3DF
+      border-radius: 0, bg: #FAFAF8
+      Lato 300, 14px, #0A0A0A
+      padding: 0 16px
+      focus: border-color #9B6B4D
+        bg white, outline none
+        box-shadow: 0 0 0 3px
+          rgba(155,107,77,0.08)
+
+    Each field has a label above:
+      Lato 400, 11px, #0A0A0A, uppercase
+      letter-spacing 0.1em, mb-8px
+
+    "SEND MESSAGE" button:
+      Full-width, height 52px
+      bg: #9B6B4D, color: white
+      border-radius: 0
+      Lato 400 12px uppercase
+      letter-spacing 0.2em, mt-8px
+      hover: bg #8A5D40, 250ms
+
+    Success state (after submit):
+      Replace form with:
+      checkmark icon: 48px, #5F7A61
+      "Message Sent!"
+        Cormorant Garamond, 36px, #0A0A0A
+      "We'll get back to you within
+       2 hours."
+        Lato 300, 16px, #6B6B6B
+
+═══════════════════════════════════════════════════
+PAGE 3 — FAQ PAGE (/faq)
+═══════════════════════════════════════════════════
+
+Route: /src/app/faq/page.tsx
+
+─── HERO ─────────────────────────────────────────
+
+bg: #EFE9DF, padding: 80px, text-center
+
+  Eyebrow: "SUPPORT"
+  Heading: "Frequently Asked Questions"
+  Subheading: "Can't find what you're
+    looking for? Email us at
+    support@eternobliss.com"
+
+  Search input:
+    max-width: 480px, mx-auto, mt-32px
+    height: 52px
+    border: 1px solid #E5E3DF
+    border-radius: 0, bg: white
+    Lato 300, 14px
+    padding-left: 48px
+    search icon: left side, #9B9B9B
+
+    As user types: filter accordion items
+    in real time (client-side, no API)
+
+─── FAQ CATEGORIES ───────────────────────────────
+
+bg: #FFFFFF, padding: 96px
+max-width: 860px, mx-auto
+
+Tab row (above accordions):
+  "All" | "Orders" | "Products" |
+  "Subscriptions" | "Returns" | "Shipping"
+
+  Active tab:
+    border-bottom: 2px solid #9B6B4D
+    color: #9B6B4D
+  Inactive:
+    color: #6B6B6B, hover: #0A0A0A
+
+Each FAQ group renders as labelled
+accordion section:
+
+─── ORDER FAQs ───────────────────────────────────
+
+Q: How do I track my order?
+A: Once your order ships you'll receive
+   a tracking email with a link to follow
+   your delivery in real time. You can
+   also visit our Track Order page and
+   enter your order number and email.
+
+Q: Can I modify or cancel my order?
+A: Orders can be modified or cancelled
+   within 1 hour of placing them. After
+   that they enter fulfillment and cannot
+   be changed. Email us immediately at
+   support@eternobliss.com.
+
+Q: I received the wrong item.
+   What do I do?
+A: We're sorry about that. Email
+   support@eternobliss.com with your
+   order number and a photo of what
+   you received. We'll ship the correct
+   item immediately at no cost.
+
+Q: My order arrived damaged.
+A: Please email us within 48 hours of
+   delivery with your order number and
+   photos of the damage. We'll arrange
+   a replacement or full refund right away.
+
+Q: Do you ship to Canada?
+A: Yes — we're based in Mississauga,
+   Ontario and ship across Canada.
+   Free shipping on orders over $100.
+   Standard delivery is 1–3 business days.
+
+─── PRODUCT FAQs ─────────────────────────────────
+
+Q: Are your supplements third-party tested?
+A: Yes. Every batch is tested by an
+   independent laboratory for purity,
+   potency, and the absence of
+   contaminants. Certificates of
+   analysis are available on request.
+
+Q: Is the collagen powder truly unflavored?
+A: Completely tasteless and odorless.
+   It dissolves fully in hot or cold
+   liquids without any taste or texture.
+   Safe to add to coffee, smoothies,
+   water, or any beverage.
+
+Q: Is the Red Light Device FDA cleared?
+A: Yes — registered with the FDA as a
+   Class II medical device. Clinical
+   evidence of safety and efficacy was
+   required for clearance. Documentation
+   is available on request.
+
+Q: What compression level is EternoBliss
+   compression wear?
+A: 15–25mmHg graduated compression —
+   the medical-grade moderate support
+   range used clinically for DVT
+   prevention and post-surgical recovery.
+
+Q: Can I use the red light device
+   every day?
+A: Yes — daily use is safe and
+   accelerates results. We recommend
+   3–5 sessions per week minimum,
+   10–20 minutes per session.
+
+─── SUBSCRIPTION FAQs ────────────────────────────
+
+Q: How does Subscribe & Save work?
+A: Choose any supplement, select
+   "Subscribe & Save" at checkout, and
+   choose your delivery frequency
+   (15, 30, 60, or 90 days). You save
+   15% on every order automatically.
+
+Q: Can I skip, pause, or cancel?
+A: Yes — anytime, no questions asked.
+   Log into your account or email
+   support@eternobliss.com to manage
+   your subscription. No cancellation
+   fees or penalties.
+
+Q: Can I change my delivery frequency?
+A: Yes — log into your account and
+   update your subscription frequency
+   at any time. Changes take effect on
+   your next scheduled order.
+
+Q: Will I be notified before each charge?
+A: Yes — you'll receive an email 3 days
+   before each scheduled charge so you
+   can skip, delay, or cancel if needed.
+
+Q: Can I subscribe to multiple products?
+A: Absolutely. Each product has its own
+   subscription you manage independently.
+   All supplements are eligible for
+   Subscribe & Save.
+
+─── RETURNS FAQs ─────────────────────────────────
+
+Q: What is your return policy?
+A: 30-day money-back guarantee on all
+   products — including opened and used
+   items. If you're not satisfied for
+   any reason, we'll refund you in full.
+   No questions asked.
+
+Q: How do I start a return?
+A: Email support@eternobliss.com with
+   your order number and reason for
+   return. We'll send a prepaid return
+   label within 24 hours. Refunds are
+   processed within 3–5 business days
+   of receiving the item.
+
+Q: Do I have to return subscription items?
+A: For subscription cancellations within
+   30 days of your first order, yes —
+   we'll send a prepaid label. After
+   30 days you can simply cancel the
+   subscription going forward with no
+   return required.
+
+─── SHIPPING FAQs ────────────────────────────────
+
+Q: How much does shipping cost?
+A: Free shipping on all orders over $100.
+   Orders under $100 are $8.99 flat rate.
+   All orders include tracking.
+
+Q: How long does delivery take?
+A: 1–3 business days across Canada.
+   Orders placed before 2pm EST ship
+   same day Monday–Friday.
+
+Q: Do you ship internationally?
+A: Currently Canada only. We're working
+   on US and international shipping.
+   Sign up to our newsletter to be
+   notified when it launches.
+
+─── STILL NEED HELP ──────────────────────────────
+
+bg: #EFE9DF, border-radius: 4px
+padding: 48px, text-center
+margin-top: 64px
+
+  Heading: "Still Have Questions?"
+    Cormorant Garamond, 36px, #0A0A0A
+
+  Body: "Our team replies within 2 hours
+    on business days."
+    Lato 300, 16px, #6B6B6B, mt-12px
+
+  "CONTACT US" button:
+    border: 1px solid #9B6B4D
+    color: #9B6B4D, mt-24px
+    hover: bg #9B6B4D color white
+
+═══════════════════════════════════════════════════
+PAGE 4 — TRACK ORDER (/track-order)
+═══════════════════════════════════════════════════
+
+Route: /src/app/track-order/page.tsx
+
+─── HERO ─────────────────────────────────────────
+
+bg: #EFE9DF, padding: 80px, text-center
+
+  Eyebrow: "ORDER TRACKING"
+  Heading: "Track Your Order"
+  Subheading: "Enter your order number
+    and email to see your delivery status."
+
+─── TRACKING FORM ────────────────────────────────
+
+bg: #FFFFFF, padding: 96px
+max-width: 560px, mx-auto
+
+  bg: #FFFFFF, border: 1px solid #E5E3DF
+  border-radius: 4px, padding: 48px
+
+  "Order Number" label + input
+  "Email Address" label + input
+
+  Same input styles as contact form
+
+  "TRACK ORDER" button:
+    Full-width, height 52px
+    bg: #9B6B4D, color white
+    border-radius: 0
+    Lato 400 12px uppercase
+    letter-spacing 0.2em
+
+  Help text below button:
+    Lato 300 italic, 13px, #9B9B9B
+    text-center, mt-16px
+    "Your order number is in your
+     confirmation email."
+
+─── RESULT STATE ─────────────────────────────────
+
+After "tracking":
+  Show a placeholder result card:
+
+  bg: #FAFAF8, border: 1px solid #E5E3DF
+  border-radius: 4px, padding: 32px
+  mt-32px
+
+  Top row: Order #[number] + Status badge
+    Status badge:
+      "IN TRANSIT" bg: rgba(95,122,97,0.12)
+        color: #5F7A61
+      "DELIVERED" bg: rgba(95,122,97,0.2)
+      "PROCESSING" bg: rgba(155,107,77,0.1)
+        color: #9B6B4D
+
+  Progress steps (horizontal):
+    4 steps with connecting line:
+    "Order Placed" → "Processing" →
+    "Shipped" → "Delivered"
+
+    Active step: cognac dot + bold label
+    Completed: green dot + normal label
+    Upcoming: grey dot + grey label
+
+  Estimated delivery:
+    Lato 300, 14px, #6B6B6B, mt-24px
+    "Estimated delivery: [date]"
+
+  "View full tracking →" link
+    Lato 400, 13px, #9B6B4D
+    Links to carrier tracking URL
+
+Note: Implement actual Shopify order
+tracking via:
+  POST /api/track-order
+  Server action calls Shopify Admin API
+  GET /admin/api/orders.json?name=[number]
+  Mark with // TODO: Connect Shopify Admin API
+
+═══════════════════════════════════════════════════
+PAGE 5 — 404 PAGE
+═══════════════════════════════════════════════════
+
+Route: /src/app/not-found.tsx
+
+bg: #FAFAF8
+Full viewport height, flex, centered
+
+  "404" decorative:
+    Cormorant Garamond, 200px, weight 300
+    color: #F0EBE3, line-height: 1
+    display: block, text-align: center
+
+  Content (position relative, mt: -80px):
+    Eyebrow: "PAGE NOT FOUND"
+    Heading: "Lost in the Ritual"
+      Cormorant Garamond, 48px, #0A0A0A
+      text-center
+
+    Body: "The page you're looking for
+      has moved or doesn't exist. Let's
+      get you back on track."
+      Lato 300, 16px, #6B6B6B
+      text-center, max-width: 400px
+      mx-auto, mt-16px, line-height: 1.8
+
+    2 CTAs:
+      "GO HOME" — primary cognac button
+      "SHOP ALL" — secondary border button
+      gap: 12px, mt-32px, justify-center
+
+  Quick links below buttons:
+    "Popular pages:"
+    Lato 300, 13px, #9B9B9B, mt-32px
+
+    Links inline, gap: 24px:
+      "Supplements" | "Fitness Tech" |
+      "Compression" | "Contact"
+      Lato 400, 13px, #9B6B4D
+      hover: underline
+
+═══════════════════════════════════════════════════
+PAGE 6 — PRIVACY POLICY (/privacy-policy)
+═══════════════════════════════════════════════════
+
+Route: /src/app/privacy-policy/page.tsx
+
+─── HERO ─────────────────────────────────────────
+
+bg: #EFE9DF, padding: 64px, text-center
+
+  Eyebrow: "LEGAL"
+  Heading: "Privacy Policy"
+  "Last updated: January 1, 2025"
+    Lato 300, 14px, #9B9B9B, mt-12px
+
+─── CONTENT ──────────────────────────────────────
+
+bg: #FFFFFF, padding: 80px
+max-width: 760px, mx-auto
+
+Prose style:
+  All h2: Cormorant Garamond, 28px,
+    #0A0A0A, weight 400, mt-48px mb-16px
+  All h3: Lato 700, 16px, #0A0A0A,
+    mt-32px mb-12px
+  All p: Lato 300, 16px, #333333,
+    line-height: 1.85, mb-16px
+  All ul/ol: same body style,
+    padding-left: 24px, mb-16px
+  All li: mb-8px
+
+Content sections:
+
+  ## Information We Collect
+  We collect information you provide
+  directly to us when you make a purchase,
+  create an account, subscribe to our
+  newsletter, or contact customer support.
+
+  This includes: name, email address,
+  shipping address, billing information,
+  phone number, and any communications
+  you send us.
+
+  We automatically collect certain
+  information when you visit our website
+  including IP address, browser type,
+  referring pages, and pages visited.
+
+  ## How We Use Your Information
+  We use the information we collect to:
+  - Process and fulfill your orders
+  - Send order confirmations and updates
+  - Provide customer support
+  - Send marketing communications
+    (with your consent)
+  - Improve our products and services
+  - Comply with legal obligations
+
+  ## Sharing Your Information
+  We do not sell your personal information.
+  We share information only with:
+  - Shopify (payment and order processing)
+  - Shipping carriers (delivery fulfillment)
+  - Email service providers (marketing)
+  - Analytics providers (website improvement)
+
+  All third-party providers are required
+  to maintain the confidentiality of your
+  information.
+
+  ## Cookies
+  We use cookies to improve your browsing
+  experience, remember your preferences,
+  and analyze website traffic. You can
+  control cookies through your browser
+  settings.
+
+  ## Your Rights
+  You have the right to:
+  - Access the personal data we hold
+  - Correct inaccurate information
+  - Request deletion of your data
+  - Opt out of marketing communications
+  - Data portability
+
+  To exercise these rights email
+  support@eternobliss.com.
+
+  ## Data Security
+  We implement industry-standard security
+  measures to protect your personal
+  information. All payment data is
+  processed securely through Shopify
+  and we never store credit card details.
+
+  ## Contact Us
+  For privacy-related questions contact:
+  EternoBliss — support@eternobliss.com
+
+═══════════════════════════════════════════════════
+PAGE 7 — REFUND POLICY (/refund-policy)
+═══════════════════════════════════════════════════
+
+Route: /src/app/refund-policy/page.tsx
+
+Same layout and prose style as privacy policy.
+
+  ## 30-Day Money-Back Guarantee
+  We stand behind every product we sell.
+  If you are not completely satisfied for
+  any reason, contact us within 30 days
+  of delivery for a full refund.
+
+  This applies to: opened products, used
+  products, and subscription orders within
+  the first 30 days.
+
+  ## How to Return
+  1. Email support@eternobliss.com with
+     your order number
+  2. We'll send a prepaid return label
+     within 24 hours
+  3. Drop off at any Canada Post location
+  4. Refund processed within 3–5 business
+     days of receiving your return
+
+  ## Damaged or Incorrect Items
+  If you receive a damaged or incorrect
+  item, email us within 48 hours with
+  your order number and photos. We will
+  ship a replacement immediately at
+  no cost to you.
+
+  ## Subscription Refunds
+  For subscriptions, you may cancel at
+  any time. For refunds on subscription
+  charges contact us within 30 days of
+  the charge.
+
+  ## Non-Returnable Items
+  Final sale items marked clearly at
+  purchase are not eligible for return.
+
+  ## Refund Method
+  Refunds are issued to the original
+  payment method. Credit card refunds
+  take 3–5 business days to appear.
+
+═══════════════════════════════════════════════════
+PAGE 8 — SHIPPING POLICY (/shipping-policy)
+═══════════════════════════════════════════════════
+
+Route: /src/app/shipping-policy/page.tsx
+
+Same layout and prose style.
+
+  ## Free Shipping
+  Free standard shipping on all orders
+  over $100 CAD. Orders under $100 are
+  $8.99 flat rate.
+
+  ## Delivery Times
+  Standard: 1–3 business days (Canada)
+  Orders placed before 2pm EST Monday–
+  Friday ship same day.
+
+  ## Order Processing
+  Orders are processed Monday–Friday,
+  9am–5pm EST. Orders placed on weekends
+  or holidays are processed the next
+  business day.
+
+  ## Tracking
+  Every order includes tracking. You'll
+  receive a tracking number by email
+  once your order ships.
+
+  ## Currently Shipping To
+  We currently ship within Canada only.
+  US and international shipping coming
+  soon — sign up to our newsletter for
+  updates.
+
+  ## Address Changes
+  Address changes can be made within
+  1 hour of ordering by emailing
+  support@eternobliss.com. After that
+  orders enter fulfillment and cannot
+  be redirected.
+
+  ## Lost or Delayed Packages
+  If your package hasn't arrived within
+  7 business days of your tracking
+  showing it shipped, contact us and
+  we'll investigate and reship if needed.
+
+═══════════════════════════════════════════════════
+PAGE 9 — TERMS OF SERVICE (/terms-of-service)
+═══════════════════════════════════════════════════
+
+Route: /src/app/terms-of-service/page.tsx
+
+Same layout and prose style.
+
+  ## Acceptance of Terms
+  By accessing or using the EternoBliss
+  website and purchasing our products,
+  you agree to be bound by these Terms
+  of Service.
+
+  ## Products
+  All products are subject to availability.
+  We reserve the right to limit quantities
+  or discontinue products at any time.
+  Product images are for illustration —
+  actual products may vary slightly.
+
+  ## Pricing
+  All prices are in Canadian dollars (CAD)
+  and are subject to change without notice.
+  We are not responsible for typographical
+  errors in pricing.
+
+  ## Subscriptions
+  Subscription orders renew automatically
+  at your selected frequency. You will
+  receive a reminder email 3 days before
+  each renewal. You may cancel at any time
+  through your account or by contacting us.
+
+  ## Intellectual Property
+  All content on this website including
+  text, images, logos, and design is the
+  property of EternoBliss and may not be
+  reproduced without written permission.
+
+  ## Limitation of Liability
+  EternoBliss is not liable for any
+  indirect, incidental, or consequential
+  damages arising from your use of our
+  products or website.
+
+  ## Health Disclaimer
+  Our products are not intended to
+  diagnose, treat, cure, or prevent any
+  disease. Consult your healthcare
+  provider before beginning any supplement
+  program.
+
+  ## Governing Law
+  These terms are governed by the laws
+  of Ontario, Canada.
+
+  ## Contact
+  Questions about these terms:
+  support@eternobliss.com
+
+═══════════════════════════════════════════════════
+NAVIGATION — UPDATE ALL LINKS
+═══════════════════════════════════════════════════
+
+Update Footer.tsx to include all new pages:
+
+  SUPPORT column:
+    Track Order → /track-order
+    Contact → /contact
+    FAQs → /faq
+    Returns → /refund-policy
+
+  LEGAL section (add to footer bottom bar):
+    Privacy Policy → /privacy-policy
+    Terms of Service → /terms-of-service
+    Refund Policy → /refund-policy
+    Shipping Policy → /shipping-policy
+
+Update Header.tsx:
+  Add to mobile menu:
+    Track Order → /track-order
+    Contact → /contact
+
+═══════════════════════════════════════════════════
+SHARED POLICY PAGE LAYOUT COMPONENT
+═══════════════════════════════════════════════════
+
+Create /src/components/PolicyPage.tsx
+to avoid repeating hero + prose layout:
+
+  Props:
+    eyebrow: string
+    heading: string
+    lastUpdated?: string
+    children: ReactNode
+
+  Renders:
+    Header
+    Hero (EFE9DF bg, centered, eyebrow,
+      heading, last updated)
+    Prose content area (white bg,
+      max-width 760px, centered)
+    Footer
+
+Use this for all 4 policy pages.
+
+═══════════════════════════════════════════════════
+WHAT NOT TO CHANGE
+═══════════════════════════════════════════════════
+
+✅ All existing pages — untouched
+✅ All existing components — untouched
+✅ All colors and design tokens
+✅ All fonts and typography
+✅ Cart drawer behavior
+✅ CartContext and Shopify wiring
+✅ All responsive breakpoints
+✅ All animations
+
+New pages must:
+  Match existing visual aesthetic exactly
+  Use same design tokens throughout
+  Be fully responsive (mobile-first)
+  Include Header and Footer
+  Entrance animate on scroll
+  Work with existing CartContext
